@@ -5,6 +5,7 @@
     <p>{{$store.getters.newName}}</p>
     <p>{{$store.getters['newName']}}</p>
     <button @click="mutationsFn">mutationsFn</button>
+    <button @click="mutationsUserFn">mutationsUserFn</button>
   </div>
 </template>
 
@@ -12,7 +13,7 @@
 import { useStore } from 'vuex'
 export default {
   name: 'Home',
-  setup() {
+  setup () {
     const store = useStore()
     console.log(store.state.usermame)
     console.log(store.getters.newName)
@@ -21,8 +22,13 @@ export default {
       store.dispatch('updateNameSync')
     }
 
+    const mutationsUserFn = () => {
+      store.commit('user/setUser', { account: 'su' })
+    }
+
     return {
-      mutationsFn
+      mutationsFn,
+      mutationsUserFn
     }
   }
 }
