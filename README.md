@@ -1,4 +1,4 @@
-## rabbit-client-pc
+## rabbit-client-pc-vue3
 
 
 * Vue3+VueRouter+Vuex (组合式API)
