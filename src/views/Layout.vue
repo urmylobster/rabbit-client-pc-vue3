@@ -2,25 +2,30 @@
   <AppTopnav />
   <AppHeader />
   <header>公共头部</header>
-  <main>
+  <main class="app-body">
     <!-- 二级路由 -->
     <router-view></router-view>
   </main>
-  <footer>公共底部</footer>
+  <AppFooter />
 </template>
 
 <script>
 import AppTopnav from '@/components/app-topnav.vue'
 import AppHeader from '@/components/app-header.vue'
+import AppFooter from '@/components/app-footer.vue'
 export default {
   name: 'xtx-layout',
   components: {
     AppTopnav,
-    AppHeader
+    AppHeader,
+    AppFooter
   }
 }
 
 </script>
 
 <style scoped lang="less">
+.app-body {
+  min-height: 600px;
+}
 </style>
