@@ -1,5 +1,6 @@
 <template>
-  <nav>公共顶栏</nav>
+  <AppTopnav />
+  <AppHeader />
   <header>公共头部</header>
   <main>
     <!-- 二级路由 -->
@@ -9,8 +10,17 @@
 </template>
 
 <script>
+import AppTopnav from '@/components/app-topnav.vue'
+import AppHeader from '@/components/app-header.vue'
 export default {
-  name: 'xtx-layout'
+  name: 'xtx-layout',
+  components: {
+    AppTopnav,
+    AppHeader
+  }
 }
 
 </script>
+
+<style scoped lang="less">
+</style>
