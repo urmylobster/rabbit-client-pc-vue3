@@ -5,14 +5,15 @@ import HomeView from '../views/HomeView.vue'
 const Layout = () => import('@/views/Layout.vue')
 const Home = () => import('@/views/home/index.vue')
 
+
 const routes = [
   {
     path: '/',
     component: Layout,
-    children: [{
-      path: '/',
-      component: Home
-    }]
+    children: [
+      { path: '/', component: Home },
+      { path: '/category/:id', component: ()=> import('@/views/category/index.vue')},
+      { path: '/categroy/sub/:id', component: ()=> import('@/views/category/sub.vue')}]
   },
   {
     path: '/home',
