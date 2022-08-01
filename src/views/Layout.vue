@@ -5,7 +5,7 @@
   <AppHeader />
   <!-- 2.2 固定头部布局-->
   <AppHeaderSticky />
-  <header>公共头部</header>
+  <!-- <header>公共头部</header> -->
   <main class="app-body">
     <!-- 二级路由 -->
     <router-view></router-view>
