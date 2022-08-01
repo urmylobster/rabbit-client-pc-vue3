@@ -1,6 +1,6 @@
 <template>
-  <div class="app-header-sticky" :class="{show:isShow}">
-    <div class="container" v-show="isShow">
+  <div class="app-header-sticky" :class="{show: y>=78}">
+    <div class="container" v-show="y>78">
       <router-link class="logo" to="/" />
       <AppHeaderNav />
       <div class="right">
@@ -13,21 +13,14 @@
 
 <script>
 import AppHeaderNav from './app-header-nav.vue'
+import { useWindowScroll } from '@vueuse/core'
 import { ref } from 'vue'
 export default {
   name: 'AppHeaderSticky',
   components: { AppHeaderNav },
   setup() {
-    const isShow = ref(false)
-    window.onscroll = () => {
-      const scrollTop = document.documentElement.scrollTop
-      if(scrollTop > 78) {
-        isShow.value = true
-      } else {
-        isShow.value = false
-      }
-    }
-    return { isShow }
+    const { y } = useWindowScroll()
+    return { y }
   },
 }
 </script>
