@@ -1,17 +1,23 @@
 <template>
-  <div class="home-category">
+  <div class="home-category" @mouseleave="categoryId=null">
     <ul class="menu">
-      <li v-for="i in 10" :key="i">
-        <router-link to="/">居家</router-link>
-        <router-link to="/">洗漱</router-link>
-        <router-link to="/">清洁</router-link>
+      <li v-for="item in menuList" :key="item.id" @mouseenter="categoryId = item.id" :class="{active:categoryId===item.id}">
+        <router-link :to="`/category/${item.id}`">{{item.name}}</router-link>
+        <template v-if="item.children">
+          <router-link
+            v-for="sub in item.children"
+            :key="sub.id"
+            :to="`/category/sub/${sub.id}`">
+            {{sub.name}}
+          </router-link>
+        </template>
       </li>
     </ul>
     <!-- 弹层 -->
     <div class="layer">
-      <h4>分类推荐 <small>根据您的购买或浏览记录推荐</small></h4>
+      <h4 v-if="currCategory">{{currCategory.id==='brand'?'品牌':'分类'}}推荐 <small>根据您的购买或浏览记录推荐</small></h4>
       <ul v-if="currCategory && currCategory.goods">
-        <li v-for="item in currCategory.goods" :key="item.id" @mouseenter="categoryId = item.id">
+        <li v-for="item in currCategory.goods" :key="item.id">
           <router-link to="/">
             <img :src="item.picture" alt="">
             <div class="info">
@@ -22,11 +28,24 @@
           </router-link>
         </li>
       </ul>
+      <ul v-if="currCategory && currCategory.brands && currCategory.brands.length">
+        <li class="brand" v-for="item in currCategory.brands" :key="item.id">
+        <router-link to="/">
+          <img :src="item.picture" alt="">
+          <div class="info">
+            <p class="place"><i class="iconfont icon-dingwei"></i>{{item.place}}</p>
+            <p class="name ellipsis">{{item.name}}</p>
+            <p class="desc ellipsis-2">{{item.desc}}</p>
+          </div>
+        </router-link>
+      </li>
+      </ul>
     </div>
   </div>
 </template>
 
 <script>
+import { findBrand } from '@/api/home'
 import { ref, computed, reactive } from 'vue'
 import { useStore } from 'vuex'
 export default {
@@ -36,7 +55,8 @@ export default {
     const brand = reactive({
       id: 'brand',
       name: '品牌',
-      children: [{ id: 'brand-children', name: '品牌推荐' }]
+      children: [{ id: 'brand-children', name: '品牌推荐' }],
+      brands: []
     })
 
     const menuList = computed(() => {
@@ -44,7 +64,8 @@ export default {
         return {
           id: item.id,
           name: item.name,
-          children: item.children && item.children.slice(0, 2)
+          children: item.children && item.children.slice(0, 2),
+          goods: item.goods
         }
       })
       arr.push(brand)
@@ -55,6 +76,10 @@ export default {
     const categoryId = ref(null)
     const currCategory = computed(() => {
       return menuList.value.find(item => item.id === categoryId.value)
+    })
+
+    findBrand().then(data => {
+      brand.brands = data.result
     })
 
     return { menuList, categoryId, currCategory }
@@ -83,6 +108,9 @@ export default {
         &:first-child {
           font-size: 16px;
         }
+      }
+      &:hover,&.active {
+        background: @xtxColor;
       }
     }
   }
@@ -153,6 +181,24 @@ export default {
               i {
                 font-size: 16px;
               }
+            }
+          }
+        }
+      }
+      li.brand {
+        height: 180px;
+        a {
+          align-items: flex-start;
+          img {
+            width: 120px;
+            height: 160px;
+          }
+          .info {
+            p {
+              margin-top: 8px;
+            }
+            .place {
+              color: #999;
             }
           }
         }
