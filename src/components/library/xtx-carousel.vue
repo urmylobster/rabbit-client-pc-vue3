@@ -1,5 +1,5 @@
 <template>
-  <div class='xtx-carousel'>
+  <div class="xtx-carousel" @mouseenter="stop" @mouseleave="start">
     <ul class="carousel-body">
       <li class="carousel-item" v-for="(item,i) in sliders" :key="i" :class="{fade:index===i}">
         <RouterLink to="/">
@@ -7,28 +7,84 @@
         </RouterLink>
       </li>
     </ul>
-    <a href="javascript:;" class="carousel-btn prev"><i class="iconfont icon-angle-left"></i></a>
-    <a href="javascript:;" class="carousel-btn next"><i class="iconfont icon-angle-right"></i></a>
+    <a href="javascript:;" class="carousel-btn prev"><i class="iconfont icon-angle-left" @click="toggle(-1)"></i></a>
+    <a href="javascript:;" class="carousel-btn next"><i class="iconfont icon-angle-right" @click="toggle(1)"></i></a>
     <div class="carousel-indicator">
-      <span v-for="(item, i) in sliders" :key="i" :class="{active: index===i}"></span>
+      <span v-for="(item, i) in sliders" :key="i" :class="{active: index===i}" @click="index = i"></span>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, watch, onUnmounted } from 'vue'
 export default {
   name: 'XtxCarousel',
   props: {
     sliders: {
       type: Array,
       default: () => []
+    },
+    duration: {
+      type: Number,
+      default: 3000
+    },
+    autoPlay: {
+      type: Boolean,
+      default: false
     }
   },
-  setup () {
+  setup (props) {
     // 默认显示的图片的索引
     const index = ref(0)
-    return { index }
+    // 自动播放
+    let timer = null
+    const autoPlayFn = () => {
+      clearInterval(timer)
+      timer = setInterval(() => {
+        index.value++
+        if (index.value >= props.sliders.length) {
+          index.value = 0
+        }
+      }, props.duration)
+    }
+
+    watch(() => props.sliders, (newVal) => {
+      if (newVal.length && props.autoPlay) {
+        index.value = 0
+        autoPlayFn()
+      }
+    }, {
+      immediate: true
+    })
+
+    const start = () => {
+      if (props.sliders.length && props.autoPlay) {
+        autoPlayFn()
+      }
+    }
+
+    const stop = () => {
+      if (timer) clearInterval(timer)
+    }
+
+    const toggle = (step) => {
+      const newIndex = index.value + step
+      if (newIndex >= props.sliders.length) {
+        index.value = 0
+        return
+      }
+      if (newIndex < 0) {
+        index.value = props.sliders.length - 1
+        return
+      }
+      index.value = newIndex
+    }
+
+    onUnmounted(() => {
+      clearInterval(timer)
+    })
+
+    return { index, start, stop, toggle }
   }
 }
 </script>
