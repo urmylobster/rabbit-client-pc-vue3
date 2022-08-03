@@ -11,6 +11,10 @@
             {{sub.name}}
           </router-link>
         </template>
+        <span v-else>
+          <XtxSkeleton width="60px" height="18px" style="margin-right:5px" bg="rgba(255,255,255,0.2)" />
+          <XtxSkeleton width="50px" height="18px" bg="rgba(255,255,255,0.2)" />
+        </span>
       </li>
     </ul>
     <!-- 弹层 -->
@@ -48,6 +52,7 @@
 import { findBrand } from '@/api/home'
 import { ref, computed, reactive } from 'vue'
 import { useStore } from 'vuex'
+import XtxSkeleton from './library/xtx-skeleton.vue'
 export default {
   name: 'HomeCategory',
   setup () {
@@ -58,7 +63,6 @@ export default {
       children: [{ id: 'brand-children', name: '品牌推荐' }],
       brands: []
     })
-
     const menuList = computed(() => {
       const arr = store.state.category.list.map(item => {
         return {
@@ -71,19 +75,17 @@ export default {
       arr.push(brand)
       return arr
     })
-
     // 获取当前分类逻辑
     const categoryId = ref(null)
     const currCategory = computed(() => {
       return menuList.value.find(item => item.id === categoryId.value)
     })
-
     findBrand(6).then(data => {
       brand.brands = data.result
     })
-
     return { menuList, categoryId, currCategory }
-  }
+  },
+  components: { XtxSkeleton }
 }
 </script>
 
@@ -204,6 +206,17 @@ export default {
         }
       }
     }
+  }
+}
+.xtx-skeleton {
+  animation: fade 1s linear infinite alternate;
+}
+@keyframes fade {
+  from {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 1;
   }
 }
 </style>
