@@ -15,3 +15,7 @@ export const findBanner = () => {
 export const findNew = () => {
   return request('home/new', 'get')
 }
+
+export const findHot = () => {
+  return request('home/hot', 'get')
+}
