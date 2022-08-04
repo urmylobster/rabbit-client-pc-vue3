@@ -1,24 +1,32 @@
 <template>
-  <HomePanel title="人气推荐" sub-title="人气爆款 不容错过">
-    <ul ref="pannel" class="goods-list">
-      <li v-for="item in goods" :key="item.id">
-        <RouterLink to="/">
-          <img :src="item.picture" alt="">
-          <p class="name">{{item.title}}</p>
-          <p class="desc">{{item.alt}}</p>
-        </RouterLink>
-      </li>
-    </ul>
-  </HomePanel>
+  <div class="home-hot">
+    <HomePanel title="人气推荐" sub-title="人气爆款 不容错过">
+      <div style="position:relative;height:426px;">
+        <transition name="fade">
+          <ul v-if="goods.length" ref="pannel" class="goods-list">
+            <li v-for="item in goods" :key="item.id">
+              <RouterLink to="/">
+                <img :src="item.picture" alt="">
+                <p class="name">{{item.title}}</p>
+                <p class="desc">{{item.alt}}</p>
+              </RouterLink>
+            </li>
+          </ul>
+          <HomeSkeleton v-else/>
+        </transition>
+      </div>
+    </HomePanel>
+  </div>
 </template>
 
 <script>
 import { ref } from 'vue'
 import HomePanel from './home-panel'
 import { findHot } from '@/api/home'
+import HomeSkeleton from './home-skeleton.vue'
 export default {
   name: 'HomeNew',
-  components: { HomePanel },
+  components: { HomePanel, HomeSkeleton },
   setup () {
     const goods = ref([])
     findHot().then(data => {
